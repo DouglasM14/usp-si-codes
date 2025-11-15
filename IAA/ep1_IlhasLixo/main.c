@@ -77,7 +77,7 @@ int main(int argc, char *argv[])
     encontrarCombinacao(pContainer, profundidades, qtdIlhas, 0, ilhasSolucao, 0);
 
     if (!resolvido) {
-        printf("Nao ha resposta valida!\n");
+        perror("Nao ha resposta valida!\n");
     }
     
     // Liberar memória
