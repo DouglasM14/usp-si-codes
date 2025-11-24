@@ -1,3 +1,0 @@
-/home/mint/Downloads/barycentric/build/CMakeFiles/Barycentric.dir
-/home/mint/Downloads/barycentric/build/CMakeFiles/edit_cache.dir
-/home/mint/Downloads/barycentric/build/CMakeFiles/rebuild_cache.dir
