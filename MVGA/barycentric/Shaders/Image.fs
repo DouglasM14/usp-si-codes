@@ -1,6 +1,6 @@
-#version 330 core
-out vec4 FragColor;
-
+uniform sampler2D iChannel0;
+uniform sampler2D iChannel1;
+uniform sampler2D iChannel2;
 uniform float iTime;
 uniform vec2 iResolution;
 uniform vec4 iMouse;
@@ -184,5 +184,5 @@ void main()
         col = color;
     }
 
-    FragColor = vec4(col, 1);
+    gl_FragColor = vec4(col, 1);
 }

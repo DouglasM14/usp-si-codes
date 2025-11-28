@@ -1,16 +1,26 @@
-#version 330 core
-out vec4 FragColor;
-
+uniform sampler2D iChannel0;
+uniform sampler2D iChannel1;
+uniform sampler2D iChannel2;
 uniform float iTime;
 uniform vec2 iResolution;
 uniform vec4 iMouse;
 #define EPS  .01
-#define PI 3.14159265359
 #define COL0 vec3(.2, .35, .55)
 #define COL1 vec3(.9, .43, .34)
 #define COL2 vec3(.96, .66, .13)
 #define COL3 vec3(0.0)
 #define COL4 vec3(0.99,0.1,0.09)
+
+
+
+
+/*  Install  Istructions
+
+sudo apt-get install g++ cmake git
+ sudo apt-get install libsoil-dev libglm-dev libassimp-dev libglew-dev libglfw3-dev libxinerama-dev libxcursor-dev
+libxi-dev libfreetype-dev libgl1-mesa-dev xorg-dev
+
+git clone https://github.com/JoeyDeVries/LearnOpenGL.git*/
 
 float df_circ(in vec2 p, in vec2 c, in float r)
 {
@@ -18,9 +28,16 @@ float df_circ(in vec2 p, in vec2 c, in float r)
 }
 
 // Find the intersection of "p" onto "ab".
-vec2 intersect (vec2 p, vec2 a, vec2 b) {
+vec2 intersect (vec2 p, vec2 a, vec2 b)
+{
+    // Calculate the unit vector from "a" to "b".
     vec2 ba = normalize(b - a);
 
+    // Calculate the intersection of p onto "ab" by
+    // calculating the dot product between the unit vector
+    // "ba" and the direction vector from "a" to "p", then
+    // this value is multiplied by the unit vector "ab"
+    // fired from the point "a".
     return a + ba * dot(ba, p - a);
 }
 
@@ -75,14 +92,17 @@ float df_bounds(in vec2 uv, in vec2 p, in vec2 a, in vec2 b, in vec2 c, in vec3 
     float cp = 0.;
 
 
-float c0 = sharpen(df_circ(uv, p,
-                   (.03 + cos(15.*iTime) *.01))
-                   , EPS * 1.);
+
 
 
     return cp;
 }
 
+/*vec3 scene(in vec2 uv, in vec2 a, in vec2 b, in vec2 c, in vec2 p)
+{
+    float d = df_bounds(uv, p, a, b, c);
+    return d > 0. ? COL3 : COL1;
+}*/
 
 vec3 globalColor (in vec2 uv, in vec2 a, in vec2 b, in vec2 c)
 {
@@ -90,14 +110,6 @@ vec3 globalColor (in vec2 uv, in vec2 a, in vec2 b, in vec2 c)
 
     return r;
 }
-
-float dist_01(vec2 p,float r)
-{
-    float d = length(p);
-    return smoothstep(r,r+0.01,d);
-}
-
-
 
 void main()
 {
@@ -118,7 +130,7 @@ void main()
 
     bool t1 = test(a, b, c, uv,barycoords);
     vec3 r = globalColor(uv,a,b,c);
-    bool testcc = false;//t1;
+    bool testcc = t1;
     vec3 color=vec3(0.0);
     // Visual debug lines and points.
        if (line(uv, a, b))
@@ -134,8 +146,7 @@ void main()
       if (df_circ(uv, c,EPS)<0.5*EPS)
           color = vec3(0.0, 0.0, 1.0);
 
-    vec3 col = l > 0. ? ( vec3(1)-color) : (t1 ? r : (t0 ? COL3+color : COL2-color));
+    vec3 col = l > 0. ? (testcc ? color : vec3(1)-color) : (t1 ? r : (t0 ? COL3+color : COL2-color));
 
-
-    FragColor = vec4(col, 1);
+        gl_FragColor = vec4(1.0-col, 1);
 }
