@@ -20,7 +20,9 @@ void imprimirSolucao(int solucao[], int tamanho);
 
 int main(int argc, char *argv[])
 {
+
     if (argc < 5) {
+        printf("Uso: %s <pContainer> <linhas> <colunas> <arquivo>\n", argv[0]);
         return 1;
     }
 
@@ -29,9 +31,10 @@ int main(int argc, char *argv[])
     colunas = atoi(argv[3]);
 	
 	FILE *arquivo;
-    arquivo = fopen("arquivo.txt", "r");
+    arquivo = fopen(argv[4], "r");
 
     if (arquivo == NULL) {
+        printf("Erro ao abrir o arquivo.\n");
         return 1;
     }
 
@@ -77,7 +80,7 @@ int main(int argc, char *argv[])
     encontrarCombinacao(pContainer, profundidades, qtdIlhas, 0, ilhasSolucao, 0);
 
     if (!resolvido) {
-        perror("Nao ha resposta valida!\n");
+        printf("Nao ha resposta valida!\n");
     }
     
     // Liberar memória
