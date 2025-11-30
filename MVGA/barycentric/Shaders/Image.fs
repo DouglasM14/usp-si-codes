@@ -1,6 +1,6 @@
-#version 330 core
-out vec4 FragColor;
-
+uniform sampler2D iChannel0;
+uniform sampler2D iChannel1;
+uniform sampler2D iChannel2;
 uniform float iTime;
 uniform vec2 iResolution;
 uniform vec4 iMouse;
@@ -18,6 +18,15 @@ sudo apt-get install g++ cmake git
 sudo apt-get install libsoil-dev libglm-dev libassimp-dev libglew-dev libglfw3-dev libxinerama-dev libxcursor-dev libxi-dev libfreetype-dev libgl1-mesa-dev xorg-dev
 
 git clone https://github.com/JoeyDeVries/LearnOpenGL.git
+
+Como rodar
+
+rm -rf build
+mkdir build && cd build
+cmake ..
+cmake --build .
+./Barycentric
+cd ..
 */
 
 float df_circ(in vec2 p, in vec2 c, in float r)
@@ -53,7 +62,7 @@ bool line (vec2 p, vec2 a, vec2 b)
     // from a to b, calculate the distance between the
     // pixel and the intersection point, then compare
     // that distance to the line width.
-    return length((a + ab * dot(ab, ap)) - p) < 0.0025;
+    return length((a + ab * dot(ab, ap)) - p) < 0.005;
 }
 
 float df_line(in vec2 p, in vec2 a, in vec2 b)
@@ -153,7 +162,6 @@ void main()
     vec3 r = globalColor(uv,a,b,c);
     bool testcc = false;//t1;
     vec3 color=vec3(0.0);
-    // Visual debug lines and points.
         if (line(uv, a, b))
            color = vec3(1.0, 1.0, 0.0);
         if (line(uv, b, c))
@@ -167,22 +175,20 @@ void main()
         if (df_circ(uv, c,EPS)<0.5*EPS)
            color = vec3(0.0, 0.0, 1.0);
 
-    // vec3 col = l > 0. ? ( vec3(1)-color) : (t1 ? r : (t0 ? COL3+color : COL2-color));
-    
-    vec3 corTriangulo = vec3(0.0, 1.0, 0.0);    // Verde
-    vec3 corFundo_Branco = vec3(1.0, 1.0, 1.0); // Branco
-    vec3 corFundo_Vermelho = vec3(1.0, 0.0, 0.0); // Vermelho
+    vec3 corVerde = vec3(0.4, 0.85, 0.4);    // Verde
+    vec3 corBranco = vec3(0.9, 0.9, 0.9); // Branco
+    vec3 corVermelho = vec3(0.85, 0.4, 0.4); // Vermelho
 
-    // Faz o fundo ser branco quando o mouse esta dentro do triangulo e vermelho quando fora
-    vec3 corFundoAtual = t0 ? corFundo_Branco : corFundo_Vermelho;
+    // Faz o triangulo ser verde quando o mouse esta dentro e vermelho quando fora
+    vec3 corTrianguloAtual = t0 ? corVerde : corVermelho;
     
-    // Faz a separacao que esta dentro e o que esta fora do triangulo pintando de verde e branco
-    vec3 col = t1 ? corTriangulo : corFundoAtual;
+    // Faz a separacao que esta dentro e o que esta fora do triangulo
+    vec3 col = t1 ? corTrianguloAtual : corBranco;
 
     if (color.r > 0.0 || color.g > 0.0 || color.b > 0.0)
     {
         col = color;
     }
 
-    FragColor = vec4(col, 1);
+    gl_FragColor = vec4(col, 1);
 }
